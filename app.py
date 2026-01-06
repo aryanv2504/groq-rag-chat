@@ -7,7 +7,9 @@ load_dotenv()
 
 st.set_page_config(page_title="RAG Chat System with Groq", layout="wide")
 
+# ── Sidebar ───────────────────────────────────────────────
 st.sidebar.title("Document Upload")
+
 uploaded_files = st.sidebar.file_uploader(
     "Choose PDF files",
     type=["pdf"],
@@ -18,13 +20,18 @@ chunk_size = st.sidebar.slider("Chunk Size", 500, 2000, 1000)
 chunk_overlap = st.sidebar.slider("Chunk Overlap", 50, 500, 200)
 top_k = st.sidebar.slider("Top K Results", 1, 10, 4)
 
+# ✅ UPDATED SUPPORTED GROQ MODELS
 model_name = st.sidebar.selectbox(
     "Groq Model",
-    ["llama3-8b-8192"]  # SAFE MODEL
+    [
+        "llama-3.1-8b-instant",
+        "mixtral-8x7b-32768"
+    ]
 )
 
 process_button = st.sidebar.button("Process PDFs", use_container_width=True)
 
+# ── Main UI ───────────────────────────────────────────────
 st.title("RAG Chat System with Groq")
 st.markdown("Upload PDFs and chat with your documents using Groq LLMs.")
 
