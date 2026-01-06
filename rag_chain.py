@@ -13,8 +13,8 @@ def retrieve_chunks(query, model, index, chunks, top_k=4):
 def generate_answer(context, question, model_name):
     prompt = f"""
 You are a helpful assistant.
-Answer strictly using the context below.
-If the answer is not present, say "I don't know".
+Answer only from the given context.
+If the answer is not present, say you don't know.
 
 Context:
 {context}
@@ -25,9 +25,7 @@ Question:
 
     response = client.chat.completions.create(
         model=model_name,
-        messages=[
-            {"role": "user", "content": prompt}
-        ],
+        messages=[{"role": "user", "content": prompt}],
         temperature=0.2,
         max_tokens=500
     )
