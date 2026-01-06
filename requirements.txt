@@ -3,5 +3,5 @@ groq
 faiss-cpu
 sentence-transformers
 python-dotenv
-pypdf
 pymupdf
+pypdf
