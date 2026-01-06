@@ -11,9 +11,12 @@ def retrieve_chunks(query, model, index, chunks, top_k=4):
 
 
 def generate_answer(context, question, model_name):
+    if not context.strip():
+        return "I could not find relevant information in the uploaded documents."
+
     prompt = f"""
 You are a helpful assistant.
-Answer only from the given context.
+Answer strictly using the context below.
 If the answer is not present, say you don't know.
 
 Context:
@@ -31,3 +34,4 @@ Question:
     )
 
     return response.choices[0].message.content
+
