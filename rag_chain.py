@@ -1,26 +1,35 @@
 import os
-import numpy as np
-from dotenv import load_dotenv
-from openai import OpenAI  # This is the Groq-compatible OpenAI client!
+from groq import Groq
 
-load_dotenv()
-GROQ_API_KEY = os.getenv("GROQ_API_KEY")
-client = OpenAI(
-    api_key=GROQ_API_KEY,
-    base_url="https://api.groq.com/openai/v1"
-)
+client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 
-def retrieve_chunks(query, model, index, chunks, top_k=3):
-    query_vec = model.encode([query])
-    D, I = index.search(np.array(query_vec), top_k)
-    return "\n".join([chunks[i] for i in I[0]])
+def retrieve_chunks(query, model, index, chunks, top_k=4):
+    query_embedding = model.encode([query])
+    distances, indices = index.search(query_embedding, top_k)
+    retrieved = [chunks[i] for i in indices[0]]
+    return "\n".join(retrieved)
 
-def generate_answer(context, question, model_name="llama3-8b-8192"):
-    prompt = f"Context:\n{context}\n\nQuestion: {question}\nAnswer:"
+
+def generate_answer(context, question, model_name):
+    prompt = f"""
+You are a helpful AI assistant.
+Use the following context to answer the question.
+If the answer is not in the context, say you don't know.
+
+Context:
+{context}
+
+Question:
+{question}
+"""
+
     response = client.chat.completions.create(
         model=model_name,
-        messages=[{"role": "user", "content": prompt}],
+        messages=[
+            {"role": "user", "content": prompt}
+        ],
         temperature=0.2,
         max_tokens=500
     )
-    return response.choices[0].message.content.strip()
+
+    return response.choices[0].message.content
