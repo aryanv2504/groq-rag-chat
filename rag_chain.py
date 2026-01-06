@@ -3,18 +3,18 @@ from groq import Groq
 
 client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 
+
 def retrieve_chunks(query, model, index, chunks, top_k=4):
     query_embedding = model.encode([query])
     distances, indices = index.search(query_embedding, top_k)
-    retrieved = [chunks[i] for i in indices[0]]
-    return "\n".join(retrieved)
+    return "\n".join([chunks[i] for i in indices[0]])
 
 
 def generate_answer(context, question, model_name):
     prompt = f"""
-You are a helpful AI assistant.
-Use the following context to answer the question.
-If the answer is not in the context, say you don't know.
+You are a helpful assistant.
+Answer strictly using the context below.
+If the answer is not present, say "I don't know".
 
 Context:
 {context}
